@@ -135,3 +135,76 @@ END;
 
 
 
+
+--CURSOR
+
+--implicit cursor
+DECLARE
+total_rows number(2);
+
+BEGIN
+
+UPDATE emp
+SET salary = salary + 500;
+
+IF sql%notfound 
+THEN dbms_output.put_line('no customers selected');
+ELSIF sql%found 
+THEN total_rows := sql%rowcount;
+dbms_output.put_line( total_rows || ' customers selected ');
+END IF;
+
+END;
+/
+
+--explicit cursor 
+
+--example1
+DECLARE
+c_id customers.id%type;
+c_name customers.name%type;
+c_addr customers.address%type;
+CURSOR c_customers is
+SELECT id, name, address FROM customers;
+
+BEGIN
+OPEN c_customers;
+
+LOOP
+	FETCH c_customers into c_id, c_name, c_addr;
+	EXIT WHEN c_customers%notfound;
+	dbms_output.put_line(c_id || ' ' || c_name || ' ' || c_addr);
+END LOOP;
+
+CLOSE c_customers;
+
+END;
+/
+
+
+--example2
+CREATE OR REPLACE Function TotalIncome( name_in IN varchar2 )
+RETURN varchar2
+IS
+total_val number(6);
+
+cursor c1 is
+SELECT monthly_income
+FROM employees
+WHERE name = name_in;
+
+BEGIN
+total_val := 0;
+
+FOR employee_rec in c1
+LOOP
+total_val := total_val + employee_rec.monthly_income;
+END LOOP;
+
+RETURN total_val;
+END;
+/
+
+
+
+
