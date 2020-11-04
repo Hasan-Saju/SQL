@@ -41,6 +41,16 @@ FROM EMP
 WHERE ID = ID;
 END;
 
+
+--anonymous block
+DECLARE
+amount NUMBER;
+BEGIN
+PROC1(101, amount);
+dbms_output.put_line(amount);
+END;
+
+
 --CALLING
 SELECT total_items_shipped(2011) from dual;
 
